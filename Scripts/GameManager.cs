@@ -8,8 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour{
 
 	[SerializeField] private ItemCtrl itemCtrl;
-    [SerializeField]
-    public GameObject UICanvas;
+    [SerializeField] public GameObject UICanvas;
 	[SerializeField] private int defaultTime_M;
 	[SerializeField] private int defaultTime_S;
 	[SerializeField] private GameObject FinishImage;
@@ -17,19 +16,17 @@ public class GameManager : MonoBehaviour{
 
 	[SerializeField] private NumberSprite numberSpr;
     [SerializeField] private List<Image> timerImg;
-    [SerializeField]
-    private Animation timerAnimation;
+    [SerializeField] private Animation timerAnimation;
 
 
 	private void Start()
 	{
 		FinishImage.SetActive(false);
-
+        DisableRigidbody();
 		itemCtrl.StartPopItem();
-		itemCtrl.StartPopKedama();
-        //UICanvas.SetActive(false);
+        itemCtrl.StartPopKedama();
         TimerSet(defaultTime_M * 60 + defaultTime_S);
-		StartTimer();
+
 	}
 
 	//todo: ゲーム状態の管理
@@ -77,7 +74,7 @@ public class GameManager : MonoBehaviour{
         TimerSet(0);
         yield return new WaitForSeconds(1f);
 
-        timerAnimation.Play("Timer_Finish");
+        //timerAnimation.Play("Timer_Finish");
 
         TimeUp();
 	}
@@ -93,6 +90,9 @@ public class GameManager : MonoBehaviour{
 		itemCtrl.StopPopItem();
 		itemCtrl.StopPopKedama();
 
+        DisableRigidbody();
+
+        //  スコアセーブ
 		for (int PlayerNum = 1; PlayerNum < players.Count + 1; PlayerNum++){
 			var saveKey = Enum.GetName(typeof(PlayerCtrl.PLAYER_NUM), PlayerNum) + "Score";
 			var data = players[PlayerNum-1].Score;
@@ -105,14 +105,25 @@ public class GameManager : MonoBehaviour{
 		StartCoroutine(ToResultScene());
 	}
 
+    public void AbleRigidbody()
+    {
+        foreach(var p in players)
+        {
+            p.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            p.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+        }
+    }
+
+    public void DisableRigidbody()
+    {
+        foreach (var p in players)
+        {
+            p.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        }
+    }
+
 	public IEnumerator ToResultScene(){
 		yield return new WaitForSeconds(3f);
 		SceneManager.LoadScene("ResultScene");
 	}
-
-	//todo: 各種設定
-
-	//todo: UIの更新
-
-
 }

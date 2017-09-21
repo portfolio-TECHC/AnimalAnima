@@ -2,14 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 毛魂（アニマ）
+/// </summary>
 public class Kedama : MonoBehaviour {
 
+	/// <summary>
+	/// アニマの色
+	/// </summary>
 	public enum KEDAMA_TYPE {
 		BLUE,
 		YELLOW,
 		RED
 	}
 
+	/// <summary>
+	/// アニマの色を選択
+	/// </summary>
 	public KEDAMA_TYPE KedamaType;
 
 	[SerializeField] PlayerCtrl playerCtrl;
